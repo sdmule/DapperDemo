@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Dapper.Contrib.Extensions;
 using DapperDemo.Data;
 using DapperDemo.Models;
 using Microsoft.Data.SqlClient;
@@ -31,11 +32,11 @@ namespace DapperDemo.Repository
         }
         public Company Find(int id)
         {
-            return db.Query<Company>("usp_GetCompany", new { CompanyId = id }, commandType: CommandType.StoredProcedure).Single();
+            return db.Get<Company>(id);
         }
         public List<Company> FindAll()
         {
-            return db.Query<Company>("usp_GetALLCompany", commandType: CommandType.StoredProcedure).ToList();
+            return db.GetAll<Company>().ToList();
         }
         public void Delete(int id)
         {
