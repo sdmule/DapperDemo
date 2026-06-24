@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using DapperDemo.Models;
 using DapperDemo.Data;
 using DapperDemo.Repository;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 public class EmployeesController : Controller
 {
@@ -27,6 +28,12 @@ public class EmployeesController : Controller
     // GET: EMPLOYEES/Create
     public IActionResult Create()
     {
+        IEnumerable<SelectListItem> companyList = _compRepo.FindAll().Select(c => new SelectListItem
+        {
+            Value = c.CompanyId.ToString(),
+            Text = c.Name
+        });
+        ViewBag.CompanyList = companyList;
         return View();
     }
 
@@ -55,6 +62,12 @@ public class EmployeesController : Controller
         }
 
         var Employee = _empRepo.Find(id.GetValueOrDefault());
+        IEnumerable<SelectListItem> companyList = _compRepo.FindAll().Select(c => new SelectListItem
+        {
+            Value = c.CompanyId.ToString(),
+            Text = c.Name
+        });
+        ViewBag.CompanyList = companyList;
         if (Employee == null)
         {
             return NotFound();
