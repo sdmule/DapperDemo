@@ -17,7 +17,7 @@ namespace DapperDemo.Repository
         public Company Add(Company company)
         {
             var parameters = new DynamicParameters();
-            parameters.Add("@CompanyId", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parameters.Add("@CompanyId", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
             parameters.Add("@Name", company.Name);
             parameters.Add("@Address", company.Address);
             parameters.Add("@City", company.City);
@@ -39,15 +39,18 @@ namespace DapperDemo.Repository
         }
         public void Delete(int id)
         {
-            var sql = "DELETE FROM Companies WHERE CompanyId = @Id";
-            db.Execute(sql, new { Id = id });
-            return;
+            db.Execute("usp_RemoveCompany", new { CompanyId = id }, commandType: CommandType.StoredProcedure);
         }
         public Company Update(Company company)
         {
-            var sql = "UPDATE Companies SET Name = @Name, Address = @Address, City = @City, " +
-                     "State = @State, PostalCode = @PostalCode WHERE CompanyId = @CompanyId";
-            db.Execute(sql, company);
+            var parameters = new DynamicParameters();
+            parameters.Add("@CompanyId", company.CompanyId, dbType: DbType.Int32);
+            parameters.Add("@Name", company.Name);
+            parameters.Add("@Address", company.Address);
+            parameters.Add("@City", company.City);
+            parameters.Add("@State", company.State);
+            parameters.Add("@PostalCode", company.PostalCode);
+            this.db.Execute("usp_UpdateCompany", parameters, commandType: CommandType.StoredProcedure);
             return company;
         }
     }
