@@ -9,6 +9,6 @@
         public string State { get; set; }
         public string PostalCode { get; set; }
 
-        public List<Employee> Employees { get; set; }
+        public List<Employee>? Employees { get; set; }
     }
 }
