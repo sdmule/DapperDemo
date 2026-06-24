@@ -48,7 +48,7 @@ public class CompaniesController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("CompanyId,Name,Address,City,State,Country")] Company company)
+    public async Task<IActionResult> Create([Bind("CompanyId,Name,Address,City,State,PostalCode")] Company company)
     {
         if (ModelState.IsValid)
         {
@@ -79,7 +79,7 @@ public class CompaniesController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int? companyid, [Bind("CompanyId,Name,Address,City,State,Country")] Company company)
+    public async Task<IActionResult> Edit(int? companyid, [Bind("CompanyId,Name,Address,City,State,PostalCode")] Company company)
     {
         if (companyid != company.CompanyId)
         {
