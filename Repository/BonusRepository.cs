@@ -2,6 +2,7 @@
 using DapperDemo.Models;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using System.Transactions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace DapperDemo.Repository
@@ -35,7 +36,32 @@ namespace DapperDemo.Repository
                             + "SELECT CAST(SCOPE_IDENTITY() as int);";
 
             db.Execute(sqlEmp, objComp.Employees);
+        }
 
+        public void AddTestCompanyWithEmployeesWithTransaction(Company objComp)
+        {
+            using (var transaction = new TransactionScope())
+            {
+                try
+                {
+                    var sql = "INSERT INTO Companies (Name, Address, City, State, PostalCode) VALUES(@Name, @Address, @City, @State, @PostalCode);"
+                            + "SELECT CAST(SCOPE_IDENTITY() as int);";
+                    var id = db.Query<int>(sql, objComp).Single();
+                    objComp.CompanyId = id;
+
+                    objComp.Employees.Select(c => { c.CompanyId = id; return c; }).ToList();
+                    var sqlEmp = "INSERT INTO Employees (Name, Title, Phone, Email, CompanyId) VALUES(@Name, @Title, @Phone, @Email, @CompanyId);"
+                                    + "SELECT CAST(SCOPE_IDENTITY() as int);";
+
+                    db.Execute(sqlEmp, objComp.Employees);
+
+                    transaction.Complete();
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
         }
 
         public List<Company> GetAllCompaniesWithEmployees()
@@ -71,7 +97,7 @@ namespace DapperDemo.Repository
 
             Company company;
 
-            using(var lists = db.QueryMultiple(sql, p))
+            using (var lists = db.QueryMultiple(sql, p))
             {
                 company = lists.Read<Company>().ToList().FirstOrDefault();
                 company.Employees = lists.Read<Employee>().ToList();
@@ -80,15 +106,15 @@ namespace DapperDemo.Repository
             return company;
         }
 
-        public List<Employee> GetEmployeeWithCompany(int id) 
+        public List<Employee> GetEmployeeWithCompany(int id)
         {
             var sql = "select e.*, c.* from Employees e inner join Companies c on c.CompanyId = e.CompanyId";
-            if(id != 0)
+            if (id != 0)
             {
                 sql += " where e.CompanyId = @Id";
             }
 
-            var employee = db.Query< Employee, Company, Employee> (sql, (e, c) =>
+            var employee = db.Query<Employee, Company, Employee>(sql, (e, c) =>
             {
                 e.Company = c;
                 return e;
@@ -104,7 +130,7 @@ namespace DapperDemo.Repository
 
         public List<Company> FilterCompanyByName(string name)
         {
-            return db.Query<Company>("SELECT * FROM Companies WHERE Name LIKE '%'+ @name + '%' ", new { name}).ToList();
+            return db.Query<Company>("SELECT * FROM Companies WHERE Name LIKE '%'+ @name + '%' ", new { name }).ToList();
         }
     }
 }

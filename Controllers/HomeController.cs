@@ -48,7 +48,7 @@ namespace DapperDemo.Controllers
                 Phone = " test phone 2",
                 Title = "Test Manager 2"
             });
-            _bonusRepo.AddTestCompanyWithEmployees(company);
+            _bonusRepo.AddTestCompanyWithEmployeesWithTransactionf(company);
             return RedirectToAction(nameof(Index));
         }
 
