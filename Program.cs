@@ -11,6 +11,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<ICompanyRepository, CompanyRepositoryContrib>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IBonusRepository, BonusRepository>();
+builder.Services.AddScoped<IDapperSprocRepo, DapperSprocRepo>();
 
 var app = builder.Build();
 

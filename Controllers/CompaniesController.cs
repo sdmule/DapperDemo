@@ -10,18 +10,21 @@ public class CompaniesController : Controller
     private readonly ICompanyRepository _compRepo;
     private readonly IEmployeeRepository _empRepo;
     private readonly IBonusRepository _bonusRepo;
+    private readonly IDapperSprocRepo _dapperSprocRepo;
 
-    public CompaniesController(ICompanyRepository compRepo, IEmployeeRepository empRepo, IBonusRepository bonusRepo)
+    public CompaniesController(ICompanyRepository compRepo, IEmployeeRepository empRepo, IBonusRepository bonusRepo, IDapperSprocRepo dapperSprocRepo)
     {
         _compRepo = compRepo;
         _empRepo = empRepo;
         _bonusRepo = bonusRepo;
+        _dapperSprocRepo = dapperSprocRepo;
     }
 
     // GET: COMPANYS
     public async Task<IActionResult> Index()
     {
-        return View(_compRepo.FindAll());
+        //return View(_compRepo.FindAll());
+        return View(_dapperSprocRepo.List<Company>("usp_GetALLCompany"));
     }
 
     // GET: COMPANYS/Details/5
@@ -70,7 +73,8 @@ public class CompaniesController : Controller
             return NotFound();
         }
 
-        var company = _compRepo.Find(id.GetValueOrDefault());
+        //var company = _compRepo.Find(id.GetValueOrDefault());
+        var company = _dapperSprocRepo.Single<Company>("usp_GetCompany", new { CompanyId = id.GetValueOrDefault() });
         if (company == null)
         {
             return NotFound();
