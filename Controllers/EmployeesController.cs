@@ -22,7 +22,7 @@ public class EmployeesController : Controller
     }
 
     // GET: EMPLOYEES           
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int companyId=0)
     {
         //List<Employee> employees = _empRepo.FindAll();
         //foreach (var obj in employees)
@@ -30,7 +30,7 @@ public class EmployeesController : Controller
         //    obj.Company = _compRepo.Find(obj.CompanyId);
         //}
 
-        List<Employee> employees = _bonusRepo.GetEmployeeWithCompany();
+        List<Employee> employees = _bonusRepo.GetEmployeeWithCompany(companyId);
         return View(employees);
     }
 
