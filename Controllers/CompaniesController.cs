@@ -32,7 +32,7 @@ public class CompaniesController : Controller
             return NotFound();
         }
 
-        var company = _bonusRepo.GetCompanyWithAddresses(id.GetValueOrDefault());
+        var company = _bonusRepo.GetCompanyWithCompanies(id.GetValueOrDefault());
         if (company == null)
         {
             return NotFound();
