@@ -22,7 +22,13 @@ public class EmployeesController : Controller
     // GET: EMPLOYEES           
     public async Task<IActionResult> Index()
     {
-        return View(_empRepo.FindAll());
+        List<Employee> employees = _empRepo.FindAll();
+        foreach (var obj in employees)
+        {
+            obj.Company = _compRepo.Find(obj.CompanyId);
+        }
+
+        return View(employees);
     }
 
     // GET: EMPLOYEES/Create

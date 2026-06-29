@@ -1,6 +1,6 @@
 ﻿namespace DapperDemo.Repository
 {
-    public class IBonusRepository
+    public interface IBonusRepository
     {
     }
 }
