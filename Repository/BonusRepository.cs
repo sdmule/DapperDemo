@@ -13,6 +13,28 @@ namespace DapperDemo.Repository
         {
             this.db = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
         }
+
+        public Company GetCompanyWithAddresses(int id)
+        {
+            var p = new
+            {
+                CompanyId = id,
+            };
+
+            var sql = "Select * from Companies where CompanyId = @CompanyId;"
+                   + " Select * from Employees where CompanyId = @CompanyId;";
+
+            Company company;
+
+            using(var lists = db.QueryMultiple(sql, p))
+            {
+                company = lists.Read<Company>().ToList().FirstOrDefault();
+                company.Employees = lists.Read<Employee>().ToList();
+            }
+
+            return company;
+        }
+
         public List<Employee> GetEmployeeWithCompany(int id) 
         {
             var sql = "select e.*, c.* from Employees e inner join Companies c on c.CompanyId = e.CompanyId";

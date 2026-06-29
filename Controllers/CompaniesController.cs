@@ -8,10 +8,14 @@ using DapperDemo.Repository;
 public class CompaniesController : Controller
 {
     private readonly ICompanyRepository _compRepo;
+    private readonly IEmployeeRepository _empRepo;
+    private readonly IBonusRepository _bonusRepo;
 
-    public CompaniesController(ICompanyRepository compRepo)
+    public CompaniesController(ICompanyRepository compRepo, IEmployeeRepository empRepo, IBonusRepository bonusRepo)
     {
         _compRepo = compRepo;
+        _empRepo = empRepo;
+        _bonusRepo = bonusRepo;
     }
 
     // GET: COMPANYS
@@ -28,7 +32,7 @@ public class CompaniesController : Controller
             return NotFound();
         }
 
-        var company = _compRepo.Find(id.GetValueOrDefault());
+        var company = _bonusRepo.GetCompanyWithAddresses(id.GetValueOrDefault());
         if (company == null)
         {
             return NotFound();
