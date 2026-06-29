@@ -23,8 +23,8 @@ public class CompaniesController : Controller
     // GET: COMPANYS
     public async Task<IActionResult> Index()
     {
-        //return View(_compRepo.FindAll());
-        return View(_dapperSprocRepo.List<Company>("usp_GetALLCompany"));
+        return View(_compRepo.FindAll());
+        //return View(_dapperSprocRepo.List<Company>("usp_GetALLCompany"));
     }
 
     // GET: COMPANYS/Details/5
@@ -73,8 +73,8 @@ public class CompaniesController : Controller
             return NotFound();
         }
 
-        //var company = _compRepo.Find(id.GetValueOrDefault());
-        var company = _dapperSprocRepo.Single<Company>("usp_GetCompany", new { CompanyId = id.GetValueOrDefault() });
+        var company = _compRepo.Find(id.GetValueOrDefault());
+        //var company = _dapperSprocRepo.Single<Company>("usp_GetCompany", new { CompanyId = id.GetValueOrDefault() });
         if (company == null)
         {
             return NotFound();
