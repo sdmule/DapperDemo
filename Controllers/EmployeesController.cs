@@ -10,24 +10,27 @@ public class EmployeesController : Controller
 {
     private readonly ICompanyRepository _compRepo;
     private readonly IEmployeeRepository _empRepo;
+    private readonly IBonusRepository _bonusRepo;
     [BindProperty]
     public Employee Employee { get; set; }
 
-    public EmployeesController(ICompanyRepository compRepo, IEmployeeRepository empRepo)
+    public EmployeesController(ICompanyRepository compRepo, IEmployeeRepository empRepo, IBonusRepository bonusRepo)
     {
         _compRepo = compRepo;
         _empRepo = empRepo;
+        _bonusRepo = bonusRepo;
     }
 
     // GET: EMPLOYEES           
     public async Task<IActionResult> Index()
     {
-        List<Employee> employees = _empRepo.FindAll();
-        foreach (var obj in employees)
-        {
-            obj.Company = _compRepo.Find(obj.CompanyId);
-        }
+        //List<Employee> employees = _empRepo.FindAll();
+        //foreach (var obj in employees)
+        //{
+        //    obj.Company = _compRepo.Find(obj.CompanyId);
+        //}
 
+        List<Employee> employees = _bonusRepo.GetEmployeeWithCompany();
         return View(employees);
     }
 
