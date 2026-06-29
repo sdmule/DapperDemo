@@ -2,6 +2,7 @@
 using DapperDemo.Models;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace DapperDemo.Repository
 {
@@ -12,6 +13,22 @@ namespace DapperDemo.Repository
         public BonusRepository(IConfiguration configuration)
         {
             this.db = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
+        }
+
+        public void AddTestCompanyWithEmployees(Company objComp)
+        {
+            var sql = "INSERT INTO Companies (Name, Address, City, State, PostalCode) VALUES(@Name, @Address, @City, @State, @PostalCode);"
+                        + "SELECT CAST(SCOPE_IDENTITY() as int);";
+            var id = db.Query<int>(sql, objComp).Single();
+            objComp.CompanyId = id;
+
+            foreach (var employee in objComp.Employees)
+            {
+                employee.CompanyId = objComp.CompanyId;
+                var sql1 = "INSERT INTO Employees (Name, Title, Phone, Email, CompanyId) VALUES(@Name, @Title, @Phone, @Email, @CompanyId);"
+                            + "SELECT CAST(SCOPE_IDENTITY() as int);";
+                db.Query<int>(sql1, employee).Single();
+            }
         }
 
         public List<Company> GetAllCompaniesWithEmployees()
