@@ -89,5 +89,15 @@ namespace DapperDemo.Repository
 
             return employee.ToList();
         }
+
+        public void RemoveRange(int[] companyIds)
+        {
+            db.Query("DELETE FROM Companies WHERE CompanyId IN @companyIds", new { companyIds });
+        }
+
+        public List<Company> FilterCompanyByName(string name)
+        {
+            return db.Query<Company>("SELECT * FROM Companies WHERE Name LIKE '%'+ @name + '%' ", new { name}).ToList();
+        }
     }
 }
